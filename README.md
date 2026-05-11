@@ -57,6 +57,12 @@ This project uses Tailwind CSS v4 via the Vite plugin `@tailwindcss/vite`.
 
 - `src/lib/supabaseClient.ts` exports `getSupabaseClient()`
 
+## Admin UI (SSG + React islands)
+
+The admin shell is generated with SSG, and interactive UI runs in the browser.
+We keep React islands with `client:only="react"` for tables, forms, and uploads.
+This does not change SSR/SSG behavior per route; it only controls client hydration.
+
 ## Cloudflare (Astro adapter)
 
 This project is configured for Cloudflare via `@astrojs/cloudflare` with `output: "server"`.

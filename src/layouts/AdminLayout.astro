@@ -1,0 +1,129 @@
+---
+import "../styles/global.css";
+import AuthGuard from "../components/admin/AuthGuard.astro";
+
+// Archivo: layout base del admin con navbar y logout.
+
+const { title } = Astro.props;
+const pageTitle = title ? `${title} | Admin` : "Admin";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+  </head>
+  <body class="bg-[var(--ps-bg)] font-sans text-[var(--ps-text)]">
+    <AuthGuard />
+    <header class="border-b border-[var(--ps-border)] bg-[var(--ps-surface)]">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8">
+        <div class="flex items-center gap-6">
+          <a href="/admin" class="text-xl font-black tracking-tight text-[var(--ps-text)]">
+            Admin
+          </a>
+          <nav class="hidden items-center gap-4 text-sm font-semibold text-[var(--ps-muted)] md:flex">
+            <a href="/admin" class="transition-colors hover:text-[var(--ps-text)]">
+              Productos
+            </a>
+            <a href="/admin/new" class="transition-colors hover:text-[var(--ps-text)]">
+              Nuevo
+            </a>
+          </nav>
+        </div>
+        <div class="flex items-center gap-3">
+          <a
+            href="/admin/new"
+            class="rounded-md bg-[var(--ps-blue)] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--ps-blue-light)]"
+          >
+            Crear
+          </a>
+          <button
+            id="admin-logout"
+            type="button"
+            class="rounded-md border border-[var(--ps-border)] px-3 py-2 text-sm font-semibold text-[var(--ps-text)] transition-colors hover:border-[var(--ps-blue)] hover:text-white"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+      <div class="mx-auto max-w-6xl px-4 pb-3 md:px-8">
+        <p id="logout-error" class="hidden text-sm text-red-400"></p>
+      </div>
+    </header>
+    <main class="mx-auto max-w-6xl px-4 py-8 md:px-8">
+      <slot />
+    </main>
+
+    <script>
+      import { supabaseBrowser } from "../lib/supabaseBrowser";
+
+      const button = document.getElementById("admin-logout");
+      const errorEl = document.getElementById("logout-error");
+
+      /**
+       * Muestra mensaje de error en el header.
+       * Recibe message string.
+       * No devuelve valor.
+       */
+      const setError = (message) => {
+        if (!errorEl) return;
+        errorEl.textContent = message;
+        errorEl.classList.remove("hidden");
+      };
+
+      /**
+       * Limpia el mensaje de error del header.
+       * No recibe parametros.
+       * No devuelve valor.
+       */
+      const clearError = () => {
+        if (!errorEl) return;
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+      };
+
+      /**
+       * Cambia el estado visual del boton logout.
+       * Recibe isLoading boolean.
+       * No devuelve valor.
+       */
+      const setLoading = (isLoading) => {
+        if (!button) return;
+        if (isLoading) {
+          button.setAttribute("disabled", "true");
+          button.classList.add("opacity-60", "cursor-not-allowed");
+          button.textContent = "Saliendo...";
+          return;
+        }
+
+        button.removeAttribute("disabled");
+        button.classList.remove("opacity-60", "cursor-not-allowed");
+        button.textContent = "Logout";
+      };
+
+      // Logout con feedback y redireccion.
+      if (button) {
+        button.addEventListener("click", async () => {
+          clearError();
+          setLoading(true);
+
+          const supabase = supabaseBrowser();
+          const { error } = await supabase.auth.signOut();
+
+          if (error) {
+            setError(error.message);
+            setLoading(false);
+            return;
+          }
+
+          window.location.replace("/login");
+        });
+      }
+    </script>
+  </body>
+</html>

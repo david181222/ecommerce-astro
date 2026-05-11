@@ -1,0 +1,12 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import ProductForm from "../../components/admin/ProductForm";
+
+// Archivo: pagina para crear un producto nuevo.
+
+export const prerender = true;
+---
+
+<AdminLayout title="Nuevo producto">
+  <ProductForm client:only="react" />
+</AdminLayout>

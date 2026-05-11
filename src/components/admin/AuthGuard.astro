@@ -1,0 +1,27 @@
+---
+// Archivo: bloquea rutas admin si no hay sesion.
+---
+<script>
+  import { supabaseBrowser } from "../../lib/supabaseBrowser";
+
+  /**
+   * Redirige a /login cuando no hay sesion valida.
+   * No recibe parametros.
+   * No devuelve valor.
+   */
+  const redirectToLogin = () => {
+    if (window.location.pathname !== "/login") {
+      window.location.replace("/login");
+    }
+  };
+
+  // Verifica sesion al cargar la pagina.
+  (async () => {
+    const supabase = supabaseBrowser();
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error || !data.session) {
+      redirectToLogin();
+    }
+  })();
+</script>
