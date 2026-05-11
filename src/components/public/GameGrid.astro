@@ -1,0 +1,19 @@
+---
+import type { GameListItem } from '../../types/game';
+import GameCard from './GameCard.astro';
+
+interface Props {
+  games: GameListItem[];
+}
+
+const { games } = Astro.props;
+---
+
+<section
+  aria-label="Catálogo de juegos"
+  class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+>
+  {games.map((game) => (
+    <GameCard game={game} />
+  ))}
+</section>

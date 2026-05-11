@@ -1,0 +1,73 @@
+---
+interface Props {
+  page: number;
+  totalPages: number;
+  basePath?: string;
+}
+
+const { page, totalPages, basePath } = Astro.props;
+const hasPrev = page > 1;
+const hasNext = page < totalPages;
+const base = basePath ?? '/games';
+const pagePrefix = base.endsWith('page=')
+  ? ''
+  : `${base.includes('?') ? '&' : '?'}page=`;
+const prevUrl = `${base}${pagePrefix}${page - 1}`;
+const nextUrl = `${base}${pagePrefix}${page + 1}`;
+// En SSR navegamos con enlaces; no se necesita estado ni JS de cliente.
+const maxPagesToShow = 7;
+const pageItems: Array<number | 'ellipsis'> = [];
+
+if (totalPages <= maxPagesToShow) {
+  for (let i = 1; i <= totalPages; i += 1) {
+    pageItems.push(i);
+  }
+} else if (page <= 3) {
+  pageItems.push(1, 2, 3, 4, 'ellipsis', totalPages);
+} else if (page >= totalPages - 2) {
+  pageItems.push(1, 'ellipsis');
+  for (let i = totalPages - 3; i <= totalPages; i += 1) {
+    pageItems.push(i);
+  }
+} else {
+  pageItems.push(1, 'ellipsis', page - 1, page, page + 1, 'ellipsis', totalPages);
+}
+---
+
+<nav aria-label="Paginación" class="mt-8 flex items-center justify-center gap-2">
+  {hasPrev ? (
+    <a
+      href={prevUrl}
+      class="btn-page"
+    >
+      &larr; Anterior
+    </a>
+  ) : (
+    <span class="btn-page cursor-not-allowed opacity-40">
+      &larr; Anterior
+    </span>
+  )}
+  {pageItems.map((item) =>
+    item === 'ellipsis' ? (
+      <span class="px-2 text-[var(--ps-muted)]">...</span>
+    ) : item === page ? (
+      <span class="btn-page-active">{item}</span>
+    ) : (
+      <a href={`${base}${pagePrefix}${item}`} class="btn-page">
+        {item}
+      </a>
+    )
+  )}
+  {hasNext ? (
+    <a
+      href={nextUrl}
+      class="btn-page"
+    >
+      Siguiente &rarr;
+    </a>
+  ) : (
+    <span class="btn-page cursor-not-allowed opacity-40">
+      Siguiente &rarr;
+    </span>
+  )}
+</nav>

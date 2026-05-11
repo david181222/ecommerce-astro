@@ -12,10 +12,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.9",
     "@astrojs/cloudflare": "^13.3.1",
     "@supabase/supabase-js": "^2.105.3",
     "@tailwindcss/vite": "^4.2.4",
-    "astro": "^6.2.2"
+    "astro": "^6.2.2",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
     "autoprefixer": "^10.5.0",

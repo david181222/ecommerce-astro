@@ -1,0 +1,28 @@
+---
+import type { Platform } from '../../types/game';
+
+interface Props {
+  platforms: Platform[];
+  selectedPlatformId: string;
+}
+
+const { platforms, selectedPlatformId } = Astro.props;
+---
+
+<div class="w-full md:w-auto">
+  <label class="sr-only" for="platform-select">Filtrar por plataforma</label>
+  <select
+    id="platform-select"
+    name="platformId"
+    onchange="this.form.submit()"
+    aria-label="Filtrar por plataforma"
+    class="w-full rounded-xl border border-[var(--ps-border)] bg-[var(--ps-bg)] px-3 py-2 text-sm text-[var(--ps-text)] outline-none transition-colors focus:border-[var(--ps-blue-light)] md:w-auto"
+  >
+    <option value="">Todas las plataformas</option>
+    {platforms.map((platform) => (
+      <option value={platform.id} selected={platform.id === selectedPlatformId}>
+        {platform.name}
+      </option>
+    ))}
+  </select>
+</div>
