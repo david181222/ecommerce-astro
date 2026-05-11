@@ -1,0 +1,28 @@
+---
+import type { Genre } from '../../types/game';
+
+interface Props {
+  genres: Genre[];
+  selectedGenreId: string;
+}
+
+const { genres, selectedGenreId } = Astro.props;
+---
+
+<div class="w-full md:w-auto">
+  <label class="sr-only" for="genre-select">Filtrar por género</label>
+  <select
+    id="genre-select"
+    name="genreId"
+    onchange="this.form.submit()"
+    aria-label="Filtrar por género"
+    class="w-full rounded-xl border border-[var(--ps-border)] bg-[var(--ps-bg)] px-3 py-2 text-sm text-[var(--ps-text)] outline-none transition-colors focus:border-[var(--ps-blue-light)] md:w-auto"
+  >
+    <option value="">Todos los géneros</option>
+    {genres.map((genre) => (
+      <option value={genre.id} selected={genre.id === selectedGenreId}>
+        {genre.name}
+      </option>
+    ))}
+  </select>
+</div>

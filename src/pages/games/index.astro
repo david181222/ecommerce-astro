@@ -1,0 +1,105 @@
+---
+// SSR explícito: precios, filtros y paginación deben estar siempre actualizados.
+export const prerender = false;
+
+import EmptyState from '../../components/public/EmptyState.astro';
+import GameGrid from '../../components/public/GameGrid.astro';
+import GenreFilter from '../../components/public/GenreFilter.astro';
+import Layout from '../../layouts/Layout.astro';
+import Pagination from '../../components/public/Pagination.astro';
+import PlatformFilter from '../../components/public/PlatformFilter.astro';
+import SearchBar from '../../components/public/SearchBar.astro';
+import { listGames, listGenres, listPlatforms } from '../../services/games.server';
+import type { GameListItem, Genre, Platform } from '../../types/game';
+
+// Leemos filtros desde la URL para mantener estado compartible sin JS cliente.
+const url = Astro.url;
+const search = url.searchParams.get('search') ?? '';
+const genreId = url.searchParams.get('genreId') ?? '';
+const platformId = url.searchParams.get('platformId') ?? '';
+// Evita páginas inválidas si alguien manipula el query param.
+const page = Math.max(1, Number(url.searchParams.get('page') ?? '1'));
+const pageSize = 12;
+
+let games: GameListItem[] = [];
+let total = 0;
+let genres: Genre[] = [];
+let platforms: Platform[] = [];
+let errorMsg = '';
+
+// Ejecutamos las consultas en paralelo para reducir el tiempo al primer byte.
+try {
+  [{ items: games, total }, genres, platforms] = await Promise.all([
+    listGames({ search, genreId, platformId, page, pageSize }),
+    listGenres(),
+    listPlatforms(),
+  ]);
+} catch (error) {
+  console.error('[/games] Error fetching data:', error);
+  errorMsg = 'No pudimos cargar el catálogo. Por favor intenta de nuevo.';
+}
+
+const totalPages = Math.max(1, Math.ceil(total / pageSize));
+const filterParams = new URLSearchParams();
+if (search) filterParams.set('search', search);
+if (genreId) filterParams.set('genreId', genreId);
+if (platformId) filterParams.set('platformId', platformId);
+const paginationBase = filterParams.toString()
+  ? `/games?${filterParams.toString()}`
+  : '/games';
+---
+
+<Layout title="Catálogo de Juegos">
+  <main class="mx-auto max-w-7xl px-4 py-8 md:px-8">
+    <!-- Titulo de seccion -->
+    <h1 class="mb-6 text-4xl font-bold text-[var(--ps-text)]">
+      Catálogo de Juegos
+    </h1>
+
+    <!-- Zona de filtros -->
+    <div class="mb-8 rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-4">
+      <SearchBar search={search}>
+        <div class="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+          <GenreFilter genres={genres} selectedGenreId={genreId} />
+          <PlatformFilter
+            platforms={platforms}
+            selectedPlatformId={platformId}
+          />
+        </div>
+      </SearchBar>
+    </div>
+
+    <!-- Estado de error -->
+    {errorMsg && (
+      <p
+        role="alert"
+        class="mb-6 rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-4 text-[var(--ps-blue-light)]"
+      >
+        {errorMsg}
+      </p>
+    )}
+
+    <!-- Estado vacio -->
+    {!errorMsg && games.length === 0 && (
+      <EmptyState
+        title="Sin resultados"
+        message={
+          search || genreId || platformId
+            ? 'No encontramos juegos con esos filtros. Prueba cambiando la búsqueda.'
+            : 'El catálogo está vacío por ahora.'
+        }
+        showReset={Boolean(search || genreId || platformId)}
+      />
+    )}
+
+    <!-- Grid de juegos -->
+    {!errorMsg && games.length > 0 && <GameGrid games={games} />}
+
+    <!-- Paginacion -->
+    {!errorMsg && totalPages > 1 && (
+      <div class="mt-10">
+        <Pagination page={page} totalPages={totalPages} basePath={paginationBase} />
+      </div>
+    )}
+  </main>
+</Layout>

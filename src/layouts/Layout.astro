@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css';
+
+const { title } = Astro.props;
+const pageTitle = title ? `${title} | GameStation` : 'GameStation';
 ---
 
 <!doctype html>
@@ -10,9 +13,21 @@ import '../styles/global.css';
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{pageTitle}</title>
 	</head>
-	<body>
+	<body class="bg-[var(--ps-bg)] font-sans text-[var(--ps-text)]">
+		<header class="border-b border-[var(--ps-border)] bg-[var(--ps-surface)]">
+			<div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8">
+				<a href="/" class="text-xl font-black tracking-tight">
+					<span class="text-[var(--ps-text)]">Game</span><span class="text-[var(--ps-blue-light)]">Station</span>
+				</a>
+				<nav class="hidden items-center gap-6 text-sm font-semibold text-[var(--ps-muted)] md:flex">
+					<a href="/games" class="transition-colors hover:text-[var(--ps-text)]">
+						Catálogo
+					</a>
+				</nav>
+			</div>
+		</header>
 		<slot />
 	</body>
 </html>

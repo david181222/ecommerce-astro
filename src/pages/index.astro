@@ -1,11 +1,56 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import GameCard from '../components/public/GameCard.astro';
 import Layout from '../layouts/Layout.astro';
+import { listGames } from '../services/games.server';
+import type { GameListItem } from '../types/game';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+let featuredGames: GameListItem[] = [];
+
+try {
+	const { items } = await listGames({ pageSize: 4 });
+	featuredGames = items;
+} catch (error) {
+	console.error('[/] Error fetching featured games:', error);
+	featuredGames = [];
+}
 ---
 
 <Layout>
-	<Welcome />
+	<main class="mx-auto max-w-6xl px-4 py-10 md:px-8">
+		<section class="mb-12 rounded-2xl bg-gradient-to-br from-[var(--ps-blue)] to-[var(--ps-bg)] p-10">
+			<h1 class="text-2xl font-bold tracking-tight text-[var(--ps-text)]">
+				Tienda de videojuegos
+			</h1>
+			<p class="mt-3 text-lg text-[var(--ps-muted)]">
+				Descubre tu próximo juego favorito en nuestro catálogo.
+			</p>
+			<a
+				href="/games"
+				class="mt-6 inline-flex items-center justify-center rounded-full bg-[var(--ps-blue)] px-8 py-3 text-sm font-bold text-[var(--ps-text)] transition-colors hover:bg-[var(--ps-blue-light)]"
+			>
+				Ver catálogo
+			</a>
+		</section>
+
+		{featuredGames.length > 0 && (
+			<section class="space-y-6">
+				<div class="flex items-center justify-between">
+					<h2 class="border-b-2 border-[var(--ps-blue)] pb-2 text-2xl font-semibold text-[var(--ps-text)]">
+						Destacados
+					</h2>
+					<a
+						href="/games"
+						class="text-sm font-semibold text-[var(--ps-blue-light)] hover:text-[var(--ps-text)]"
+					>
+						Ver todo
+					</a>
+				</div>
+				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+					{featuredGames.map((game) => (
+						<GameCard game={game} />
+					))}
+				</div>
+			</section>
+		)}
+	</main>
 </Layout>

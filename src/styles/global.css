@@ -1,1 +1,49 @@
 @import "tailwindcss";
+
+:root {
+	--ps-bg: #0A0E1A;
+	--ps-surface: #111827;
+	--ps-surface-2: #1C2333;
+	--ps-border: #1E3A5F;
+	--ps-blue: #0070D1;
+	--ps-blue-light: #4DA6FF;
+	--ps-green: #00C896;
+	--ps-text: #F0F4FF;
+	--ps-muted: #7B8EA8;
+}
+
+.btn-page {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.5rem;
+	height: 2.5rem;
+	padding: 0 0.75rem;
+	border-radius: 0.5rem;
+	border: 1px solid var(--ps-border);
+	background: var(--ps-surface);
+	color: var(--ps-text);
+	font-size: 0.875rem;
+	transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-page:hover {
+	background: var(--ps-blue);
+	border-color: var(--ps-blue);
+}
+
+.btn-page-active {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.5rem;
+	height: 2.5rem;
+	padding: 0 0.75rem;
+	border-radius: 0.5rem;
+	border: 1px solid var(--ps-blue);
+	background: var(--ps-blue);
+	color: #fff;
+	font-size: 0.875rem;
+	font-weight: 700;
+	transition: background 0.15s, border-color 0.15s;
+}
