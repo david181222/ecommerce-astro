@@ -70,7 +70,7 @@ const pageTitle = title ? `${title} | Admin` : "Admin";
        * Recibe message string.
        * No devuelve valor.
        */
-      const setError = (message) => {
+      const setError = (message: string) => {
         if (!errorEl) return;
         errorEl.textContent = message;
         errorEl.classList.remove("hidden");
@@ -92,7 +92,7 @@ const pageTitle = title ? `${title} | Admin` : "Admin";
        * Recibe isLoading boolean.
        * No devuelve valor.
        */
-      const setLoading = (isLoading) => {
+      const setLoading = (isLoading: boolean) => {
         if (!button) return;
         if (isLoading) {
           button.setAttribute("disabled", "true");
