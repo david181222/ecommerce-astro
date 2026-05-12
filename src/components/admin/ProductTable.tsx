@@ -1,13 +1,20 @@
 /**
- * Archivo: tabla interactiva para listar y gestionar productos.
+ * Archivo: tabla interactiva para listar y gestionar juegos.
  */
 import { useEffect, useState } from "react";
-import type { Product } from "../../types/product";
-import { deleteProduct, getProducts } from "../../services/products.client";
-import { deleteProductImage } from "../../services/storage.client";
+import { supabaseBrowser } from "../../lib/supabaseBrowser";
+import {
+  deleteProduct,
+  getProducts,
+  type GameWithDeveloper,
+} from "../../services/products.client";
+import {
+  deleteProductImage,
+  getStoragePathFromUrl,
+} from "../../services/storage.client";
 
 type ProductTableProps = {
-  initialProducts?: Product[];
+  initialProducts?: GameWithDeveloper[];
 };
 
 /**
@@ -27,7 +34,8 @@ const formatPrice = (value: number) =>
  * Recibe value string fecha.
  * Devuelve string con fecha legible o "-".
  */
-const formatDate = (value: string) => {
+const formatDate = (value?: string | null) => {
+  if (!value) return "-";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
     return "-";
@@ -39,21 +47,6 @@ const formatDate = (value: string) => {
   });
 };
 
-const STORAGE_PUBLIC_PREFIX = "/storage/v1/object/public/product-images/";
-
-const getStoragePathFromUrl = (imageUrl?: string | null) => {
-  if (!imageUrl) return null;
-
-  try {
-    const url = new URL(imageUrl);
-    const index = url.pathname.indexOf(STORAGE_PUBLIC_PREFIX);
-    if (index === -1) return null;
-    return url.pathname.slice(index + STORAGE_PUBLIC_PREFIX.length);
-  } catch {
-    return null;
-  }
-};
-
 /**
  * Renderiza la tabla con acciones de editar y borrar.
  * Recibe initialProducts opcional para evitar el fetch inicial.
@@ -62,12 +55,14 @@ const getStoragePathFromUrl = (imageUrl?: string | null) => {
 export default function ProductTable({
   initialProducts,
 }: ProductTableProps) {
-  const [products, setProducts] = useState<Product[]>(initialProducts ?? []);
+  const [products, setProducts] = useState<GameWithDeveloper[]>(
+    initialProducts ?? []
+  );
   const [loading, setLoading] = useState(initialProducts === undefined);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Carga inicial si no vienen productos por props.
+  // Carga inicial si no vienen juegos por props.
   useEffect(() => {
     if (initialProducts !== undefined) {
       setProducts(initialProducts);
@@ -102,17 +97,43 @@ export default function ProductTable({
   }, [initialProducts]);
 
   /**
-   * Borra un producto despues de confirmar.
-   * Recibe product seleccionado.
-   * No devuelve valor.
+  * Borra un juego despues de confirmar.
+  * Recibe product seleccionado.
+  * No devuelve valor.
    */
-  const handleDelete = async (product: Product) => {
-    if (!window.confirm(`Borrar \"${product.name}\"?`)) {
+  const deleteRelations = async (gameId: string) => {
+    const supabase = supabaseBrowser();
+    const { error: genresError } = await supabase
+      .from("game_genres")
+      .delete()
+      .eq("game_id", gameId);
+
+    if (genresError) {
+      return genresError.message;
+    }
+
+    const { error: platformsError } = await supabase
+      .from("game_platforms")
+      .delete()
+      .eq("game_id", gameId);
+
+    return platformsError?.message ?? null;
+  };
+
+  const handleDelete = async (product: GameWithDeveloper) => {
+    if (!window.confirm(`Borrar el juego \"${product.name}\"?`)) {
       return;
     }
 
     setDeletingId(product.id);
     setError(null);
+
+    const relationsError = await deleteRelations(product.id);
+    if (relationsError) {
+      setError(`No se pudieron borrar las relaciones: ${relationsError}`);
+      setDeletingId(null);
+      return;
+    }
 
     const { error: deleteError } = await deleteProduct(product.id);
 
@@ -127,7 +148,7 @@ export default function ProductTable({
       const { error: imageDeleteError } = await deleteProductImage(imagePath);
       if (imageDeleteError) {
         setError(
-          `Producto eliminado, pero la imagen no se pudo borrar: ${imageDeleteError}`
+          `Juego eliminado, pero la imagen no se pudo borrar: ${imageDeleteError}`
         );
       }
     }
@@ -151,17 +172,17 @@ export default function ProductTable({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[var(--ps-text)]">
-            Productos
+            Juegos
           </h1>
           <p className="text-sm text-[var(--ps-muted)]">
-            Gestiona el catalogo y el stock desde aqui.
+            Gestiona el cat&aacute;logo y la informaci&oacute;n de juegos.
           </p>
         </div>
         <a
           href="/admin/new"
           className="rounded-md bg-[var(--ps-blue)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--ps-blue-light)]"
         >
-          Crear producto
+          Crear juego
         </a>
       </div>
 
@@ -176,10 +197,10 @@ export default function ProductTable({
           <table className="min-w-full text-left text-sm">
             <thead className="bg-[var(--ps-surface-2)] text-xs uppercase tracking-wide text-[var(--ps-muted)]">
               <tr>
-                <th className="px-4 py-3">Producto</th>
-                <th className="px-4 py-3">Categoria</th>
+                <th className="px-4 py-3">Juego</th>
+                <th className="px-4 py-3">Desarrollador</th>
                 <th className="px-4 py-3">Precio</th>
-                <th className="px-4 py-3">Stock</th>
+                <th className="px-4 py-3">Lanzamiento</th>
                 <th className="px-4 py-3">Actualizado</th>
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
@@ -188,13 +209,13 @@ export default function ProductTable({
               {loading ? (
                 <tr>
                   <td className="px-4 py-6 text-[var(--ps-muted)]" colSpan={6}>
-                    Cargando productos...
+                    Cargando juegos...
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
                   <td className="px-4 py-6 text-[var(--ps-muted)]" colSpan={6}>
-                    No hay productos cargados.
+                    No hay juegos cargados.
                   </td>
                 </tr>
               ) : (
@@ -225,13 +246,13 @@ export default function ProductTable({
                       </div>
                     </td>
                     <td className="px-4 py-4 text-[var(--ps-muted)]">
-                      {product.category}
+                      {product.developers?.name ?? "Sin desarrollador"}
                     </td>
                     <td className="px-4 py-4 font-semibold text-[var(--ps-text)]">
                       {formatPrice(product.price)}
                     </td>
                     <td className="px-4 py-4 text-[var(--ps-muted)]">
-                      {product.stock}
+                      {formatDate(product.release_date)}
                     </td>
                     <td className="px-4 py-4 text-[var(--ps-muted)]">
                       {formatDate(product.updated_at)}

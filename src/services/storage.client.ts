@@ -18,6 +18,7 @@ export type DeleteResult = {
 
 const BUCKET_NAME = "product-images";
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const STORAGE_PUBLIC_PREFIX = "/storage/v1/object/public/product-images/";
 
 /**
  * Normaliza nombres de archivo para paths consistentes.
@@ -29,7 +30,25 @@ function normalizeFilename(filename: string): string {
 }
 
 /**
- * Sube imagen de producto y devuelve URL publica.
+ * Obtiene el path del bucket a partir de una URL publica.
+ * Recibe imageUrl publica.
+ * Devuelve path relativo o null si no coincide.
+ */
+export function getStoragePathFromUrl(imageUrl?: string | null) {
+  if (!imageUrl) return null;
+
+  try {
+    const url = new URL(imageUrl);
+    const index = url.pathname.indexOf(STORAGE_PUBLIC_PREFIX);
+    if (index === -1) return null;
+    return url.pathname.slice(index + STORAGE_PUBLIC_PREFIX.length);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Sube imagen de juego y devuelve URL publica.
  * Recibe file de imagen y productId para el path.
  * Devuelve UploadResult con path y publicUrl o error.
  */

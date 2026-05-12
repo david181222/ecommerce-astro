@@ -1,11 +1,18 @@
 /**
- * Archivo: servicios cliente para CRUD de productos.
+ * Archivo: servicios cliente para CRUD de juegos.
  */
 import { supabaseBrowser } from "../lib/supabaseBrowser";
 import type { Product } from "../types/product";
 
-export type ProductInsert = Omit<Product, "id" | "created_at" | "updated_at">;
+export type ProductInsert = Omit<Product, "created_at" | "updated_at">;
 export type ProductUpdate = Partial<ProductInsert>;
+
+export type GameWithDeveloper = Product & {
+  developers?: {
+    id: string;
+    name: string;
+  } | null;
+};
 
 // Resultado comun para operaciones de servicio.
 export type ServiceResult<T> = {
@@ -13,18 +20,18 @@ export type ServiceResult<T> = {
   error: string | null;
 };
 
-const TABLE_NAME = "products";
+const TABLE_NAME = "games";
 
 /**
- * Lista productos ordenados por fecha de creacion.
+ * Lista juegos ordenados por fecha de creacion.
  * No recibe parametros.
- * Devuelve ServiceResult con productos o error.
+ * Devuelve ServiceResult con juegos o error.
  */
-export async function getProducts(): Promise<ServiceResult<Product[]>> {
+export async function getProducts(): Promise<ServiceResult<GameWithDeveloper[]>> {
   const supabase = supabaseBrowser();
   const { data, error } = await supabase
     .from(TABLE_NAME)
-    .select("*")
+    .select("*, developers!games_developer_id_fkey ( id, name )")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -35,9 +42,9 @@ export async function getProducts(): Promise<ServiceResult<Product[]>> {
 }
 
 /**
- * Obtiene un producto por id.
- * Recibe el id del producto.
- * Devuelve ServiceResult con producto o error.
+ * Obtiene un juego por id.
+ * Recibe el id del juego.
+ * Devuelve ServiceResult con juego o error.
  */
 export async function getProduct(id: string): Promise<ServiceResult<Product>> {
   const supabase = supabaseBrowser();
@@ -55,9 +62,9 @@ export async function getProduct(id: string): Promise<ServiceResult<Product>> {
 }
 
 /**
- * Crea un producto nuevo.
- * Recibe payload con datos del producto.
- * Devuelve ServiceResult con producto creado o error.
+ * Crea un juego nuevo.
+ * Recibe payload con datos del juego.
+ * Devuelve ServiceResult con juego creado o error.
  */
 export async function createProduct(
   payload: ProductInsert
@@ -77,9 +84,9 @@ export async function createProduct(
 }
 
 /**
- * Actualiza un producto existente.
- * Recibe id del producto y payload parcial con cambios.
- * Devuelve ServiceResult con producto actualizado o error.
+ * Actualiza un juego existente.
+ * Recibe id del juego y payload parcial con cambios.
+ * Devuelve ServiceResult con juego actualizado o error.
  */
 export async function updateProduct(
   id: string,
@@ -101,8 +108,8 @@ export async function updateProduct(
 }
 
 /**
- * Elimina un producto por id.
- * Recibe el id del producto.
+ * Elimina un juego por id.
+ * Recibe el id del juego.
  * Devuelve ServiceResult con true o error.
  */
 export async function deleteProduct(id: string): Promise<ServiceResult<true>> {

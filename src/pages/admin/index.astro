@@ -2,19 +2,11 @@
 import AdminLayout from "../../layouts/AdminLayout.astro";
 import ProductTable from "../../components/admin/ProductTable";
 
-// Archivo: home del admin con listado de productos.
+// Archivo: home del admin con listado de juegos.
 
 export const prerender = true;
 ---
 
-<AdminLayout title="Productos">
-  <div class="mb-6 flex items-center justify-end">
-    <a
-      href="/admin/new"
-      class="rounded-md bg-[var(--ps-blue)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--ps-blue-light)]"
-    >
-      Crear nuevo producto
-    </a>
-  </div>
+<AdminLayout title="Juegos">
   <ProductTable client:only="react" />
 </AdminLayout>

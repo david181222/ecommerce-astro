@@ -10,7 +10,7 @@ type ImageUploaderProps = {
 };
 
 /**
- * Selecciona y previsualiza imagenes de producto.
+ * Selecciona y previsualiza imagenes de juego.
  * Recibe value actual, imageUrl opcional y onChange callback.
  * Devuelve JSX con area de carga y preview.
  */
@@ -22,6 +22,7 @@ export default function ImageUploader({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Genera un preview temporal cuando se selecciona un archivo.
   useEffect(() => {
@@ -44,6 +45,25 @@ export default function ImageUploader({
    * No devuelve valor.
    */
   const handleFile = (file: File | null) => {
+    if (!file) {
+      setError(null);
+      onChange(null);
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setError("Solo se permiten im\u00e1genes.");
+      onChange(null);
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("M\u00e1ximo 5MB por imagen.");
+      onChange(null);
+      return;
+    }
+
+    setError(null);
     onChange(file);
   };
 
@@ -131,6 +151,11 @@ export default function ImageUploader({
             Quitar
           </button>
         </div>
+      ) : null}
+      {error ? (
+        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-200">
+          {error}
+        </p>
       ) : null}
     </div>
   );
