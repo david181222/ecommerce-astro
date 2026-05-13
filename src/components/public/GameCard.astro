@@ -12,6 +12,7 @@ const priceLabel = new Intl.NumberFormat('es-CO', {
 }).format(game.price);
 const genres = game.genres.slice(0, 2);
 const platforms = game.platforms.slice(0, 2);
+const imageUrl = game.image_url ?? '/placeholder-game.jpg';
 ---
 
 <article
@@ -23,7 +24,7 @@ const platforms = game.platforms.slice(0, 2);
     class="block overflow-hidden rounded-t-2xl"
   >
     <img
-      src={game.image_url ?? '/placeholder-game.jpg'}
+      src={imageUrl}
       alt={game.name}
       class="aspect-[4/3] w-full object-cover transition-transform hover:scale-105 sm:aspect-square"
       loading="lazy"
@@ -67,6 +68,11 @@ const platforms = game.platforms.slice(0, 2);
         type="button"
         class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] text-base text-[var(--ps-text)] transition-colors hover:border-[var(--ps-blue)] hover:bg-[var(--ps-border)]"
         aria-label="Añadir al carrito"
+        data-cart-button
+        data-cart-id={game.id}
+        data-cart-name={game.name}
+        data-cart-price={String(game.price)}
+        data-cart-image={imageUrl}
       >
         🛒
       </button>

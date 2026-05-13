@@ -16,9 +16,9 @@ export type DeleteResult = {
   error: string | null;
 };
 
-const BUCKET_NAME = "product-images";
+const BUCKET_NAME = "game-images";
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
-const STORAGE_PUBLIC_PREFIX = "/storage/v1/object/public/product-images/";
+const STORAGE_PUBLIC_PREFIX = "/storage/v1/object/public/game-images/";
 
 /**
  * Normaliza nombres de archivo para paths consistentes.

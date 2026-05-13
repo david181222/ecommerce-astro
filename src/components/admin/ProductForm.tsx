@@ -424,6 +424,7 @@ export default function ProductForm() {
       setImageFile(null);
       setSuccess("Juego actualizado.");
       setLoading(false);
+      window.location.href = "/admin";
       return;
     }
 

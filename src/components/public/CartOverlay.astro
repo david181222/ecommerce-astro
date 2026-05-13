@@ -1,0 +1,192 @@
+---
+---
+
+<button
+  id="cart-toggle"
+  type="button"
+  class="relative flex h-12 w-12 items-center justify-center rounded-full border border-[var(--ps-border)] bg-[var(--ps-surface)] text-lg text-[var(--ps-text)] transition-colors hover:border-[var(--ps-blue)] hover:bg-[var(--ps-surface-2)]"
+  aria-label="Abrir carrito"
+>
+  🛒
+  <span
+    id="cart-count"
+    class="absolute -right-1 -top-1 hidden min-w-[1.25rem] rounded-full bg-[var(--ps-blue)] px-1.5 py-0.5 text-[10px] font-bold text-white"
+  >
+    0
+  </span>
+</button>
+
+<div
+  id="cart-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cart-title"
+>
+  <div class="w-full max-w-md rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface)] p-6">
+    <div class="flex items-center justify-between">
+      <h2 id="cart-title" class="text-lg font-bold text-[var(--ps-text)]">
+        Carrito
+      </h2>
+      <button
+        id="cart-close"
+        type="button"
+        class="rounded-full border border-[var(--ps-border)] px-2 py-1 text-xs text-[var(--ps-text)] transition-colors hover:border-[var(--ps-blue)] hover:bg-[var(--ps-surface-2)]"
+        aria-label="Cerrar carrito"
+      >
+        ✕
+      </button>
+    </div>
+    <div id="cart-items" class="mt-4 max-h-80 space-y-3 overflow-auto"></div>
+    <div class="mt-4 flex items-center justify-between">
+      <span id="cart-total" class="text-sm font-semibold text-[var(--ps-text)]"></span>
+      <button
+        id="cart-checkout"
+        type="button"
+        class="rounded-xl bg-[var(--ps-blue)] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[var(--ps-blue-light)]"
+      >
+        Comprar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CART_KEY = "gamestation_cart";
+  const cartToggle = document.getElementById("cart-toggle");
+  const cartModal = document.getElementById("cart-modal");
+  const cartClose = document.getElementById("cart-close");
+  const cartItems = document.getElementById("cart-items");
+  const cartCount = document.getElementById("cart-count");
+  const cartTotal = document.getElementById("cart-total");
+  const cartCheckout = document.getElementById("cart-checkout");
+
+  const formatter = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const readCart = () => {
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    } catch {
+      return [];
+    }
+  };
+
+  const writeCart = (items: { id: string; name: string; price: number; image: string }[]) => {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+  };
+
+  const updateCount = (items: { id: string; name: string; price: number; image: string }[]) => {
+    if (!cartCount) return;
+    cartCount.textContent = String(items.length);
+    cartCount.classList.toggle("hidden", items.length === 0);
+  };
+
+  const renderCart = () => {
+    if (!cartItems || !cartTotal) return;
+    const items = readCart();
+    cartItems.innerHTML = "";
+
+    if (items.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "text-sm text-[var(--ps-muted)]";
+      empty.textContent = "Tu carrito está vacío.";
+      cartItems.appendChild(empty);
+      cartTotal.textContent = "";
+      return;
+    }
+
+    let total = 0;
+
+    items.forEach((item: { id: string; name: string; price: number; image: string }) => {
+      total += item.price;
+
+      const row = document.createElement("div");
+      row.className = "flex items-center gap-3";
+
+      const image = document.createElement("img");
+      image.src = item.image;
+      image.alt = item.name;
+      image.className = "h-12 w-12 rounded-lg object-cover";
+
+      const meta = document.createElement("div");
+      meta.className = "flex-1";
+
+      const title = document.createElement("p");
+      title.className = "text-sm font-semibold text-[var(--ps-text)]";
+      title.textContent = item.name;
+
+      const price = document.createElement("p");
+      price.className = "text-xs text-[var(--ps-muted)]";
+      price.textContent = formatter.format(item.price);
+
+      meta.appendChild(title);
+      meta.appendChild(price);
+
+      row.appendChild(image);
+      row.appendChild(meta);
+      cartItems.appendChild(row);
+    });
+
+    cartTotal.textContent = `Total: ${formatter.format(total)}`;
+  };
+
+  const openCart = () => {
+    if (!cartModal) return;
+    cartModal.classList.remove("hidden");
+    cartModal.classList.add("flex");
+    renderCart();
+  };
+
+  const closeCart = () => {
+    if (!cartModal) return;
+    cartModal.classList.add("hidden");
+    cartModal.classList.remove("flex");
+  };
+
+  updateCount(readCart());
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest("[data-cart-button]");
+
+    if (!button) return;
+
+    const id = button.getAttribute("data-cart-id");
+    const name = button.getAttribute("data-cart-name");
+    const price = Number(button.getAttribute("data-cart-price") || 0);
+    const image = button.getAttribute("data-cart-image");
+
+    if (!id || !name || !image) return;
+
+    const items = readCart();
+    const exists = items.some((item: { id: string }) => item.id === id);
+
+    if (!exists) {
+      items.push({ id, name, price, image });
+      writeCart(items);
+    }
+
+    updateCount(items);
+    openCart();
+  });
+
+  cartToggle?.addEventListener("click", () => openCart());
+  cartClose?.addEventListener("click", () => closeCart());
+  cartModal?.addEventListener("click", (event) => {
+    if (event.target === cartModal) {
+      closeCart();
+    }
+  });
+
+  cartCheckout?.addEventListener("click", () => {
+    writeCart([]);
+    updateCount([]);
+    closeCart();
+  });
+</script>
