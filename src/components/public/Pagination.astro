@@ -34,16 +34,16 @@ if (totalPages <= maxPagesToShow) {
 }
 ---
 
-<nav aria-label="Paginación" class="mt-8 flex items-center justify-center gap-2">
+<nav aria-label="Paginación" class="mt-8 flex flex-wrap items-center justify-center gap-3">
   {hasPrev ? (
     <a
       href={prevUrl}
-      class="btn-page"
+      class="text-xs font-bold uppercase tracking-wider text-[var(--ps-muted)] transition-colors hover:text-[var(--ps-white)]"
     >
       &larr; Anterior
     </a>
   ) : (
-    <span class="btn-page cursor-not-allowed opacity-40">
+    <span class="cursor-not-allowed text-xs font-bold uppercase tracking-wider text-[var(--ps-muted)] opacity-40">
       &larr; Anterior
     </span>
   )}
@@ -51,9 +51,14 @@ if (totalPages <= maxPagesToShow) {
     item === 'ellipsis' ? (
       <span class="px-2 text-[var(--ps-muted)]">...</span>
     ) : item === page ? (
-      <span class="btn-page-active">{item}</span>
+      <span class="border-b-2 border-[var(--ps-blue)] pb-1 text-sm font-black text-[var(--ps-blue-bright)]">
+        {item}
+      </span>
     ) : (
-      <a href={`${base}${pagePrefix}${item}`} class="btn-page">
+      <a
+        href={`${base}${pagePrefix}${item}`}
+        class="text-sm font-bold text-[var(--ps-muted)] transition-colors hover:text-[var(--ps-white)]"
+      >
         {item}
       </a>
     )
@@ -61,12 +66,12 @@ if (totalPages <= maxPagesToShow) {
   {hasNext ? (
     <a
       href={nextUrl}
-      class="btn-page"
+      class="text-xs font-bold uppercase tracking-wider text-[var(--ps-muted)] transition-colors hover:text-[var(--ps-white)]"
     >
       Siguiente &rarr;
     </a>
   ) : (
-    <span class="btn-page cursor-not-allowed opacity-40">
+    <span class="cursor-not-allowed text-xs font-bold uppercase tracking-wider text-[var(--ps-muted)] opacity-40">
       Siguiente &rarr;
     </span>
   )}

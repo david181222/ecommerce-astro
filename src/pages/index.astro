@@ -17,16 +17,19 @@ try {
 
 <Layout>
 	<main class="mx-auto max-w-6xl px-4 py-10 md:px-8">
-		<section class="mb-12 rounded-2xl bg-gradient-to-br from-[var(--ps-blue)] to-[var(--ps-bg)] p-10">
-			<h1 class="text-2xl font-bold tracking-tight text-[var(--ps-text)]">
+		<section class="mb-12 rounded border border-[var(--ps-line)] bg-[var(--ps-surface)] p-10">
+			<p class="text-xs uppercase tracking-[0.35em] text-[var(--ps-muted)]">
+				Play the catalog
+			</p>
+			<h1 class="mt-3 text-3xl font-black uppercase tracking-tight text-[var(--ps-white)]">
 				Tienda de videojuegos
 			</h1>
-			<p class="mt-3 text-lg text-[var(--ps-muted)]">
+			<p class="mt-3 text-base text-[var(--ps-muted)]">
 				Descubre tu próximo juego favorito en nuestro catálogo.
 			</p>
 			<a
 				href="/games"
-				class="mt-6 inline-flex items-center justify-center rounded-full bg-[var(--ps-blue)] px-8 py-3 text-sm font-bold text-[var(--ps-text)] transition-colors hover:bg-[var(--ps-blue-light)]"
+				class="mt-6 inline-flex items-center justify-center rounded-sm bg-[var(--ps-blue)] px-8 py-3 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition-colors hover:bg-[var(--ps-blue-bright)]"
 			>
 				Ver catálogo
 			</a>
@@ -35,12 +38,12 @@ try {
 		{featuredGames.length > 0 && (
 			<section class="space-y-6">
 				<div class="flex items-center justify-between">
-					<h2 class="border-b-2 border-[var(--ps-blue)] pb-2 text-2xl font-semibold text-[var(--ps-text)]">
+					<h2 class="border-b-2 border-[var(--ps-blue)] pb-2 text-2xl font-black uppercase tracking-tight text-[var(--ps-white)]">
 						Destacados
 					</h2>
 					<a
 						href="/games"
-						class="text-sm font-semibold text-[var(--ps-blue-light)] hover:text-[var(--ps-text)]"
+						class="text-xs font-bold uppercase tracking-widest text-[var(--ps-blue-bright)] transition-colors hover:text-[var(--ps-white)]"
 					>
 						Ver todo
 					</a>

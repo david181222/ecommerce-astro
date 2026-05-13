@@ -35,7 +35,7 @@ if (!game && !errorMsg) {
     <!-- Boton volver -->
     <a
       href="/games"
-      class="inline-flex items-center text-sm font-semibold text-[var(--ps-blue-light)] transition-colors hover:text-[var(--ps-text)]"
+      class="inline-flex items-center text-xs font-bold uppercase tracking-widest text-[var(--ps-blue-bright)] transition-colors hover:text-[var(--ps-white)]"
     >
       &larr; Volver al catálogo
     </a>
@@ -46,50 +46,50 @@ if (!game && !errorMsg) {
     <!-- Detalle del juego -->
     {game && (
       <article class="mt-6">
-        <div class="relative mb-6 overflow-hidden rounded-2xl">
+        <div class="relative mb-6">
           <img
             src={game.image_url ?? '/placeholder-game.jpg'}
             alt={game.name}
-            class="w-full max-h-80 object-cover"
+            class="max-h-[400px] w-full object-cover"
           />
-          <div class="absolute inset-0 bg-gradient-to-t from-[var(--ps-bg)] to-transparent"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[var(--ps-bg)] via-transparent to-transparent"></div>
+          <h1 class="absolute bottom-4 left-4 text-2xl font-black uppercase tracking-tight text-[var(--ps-white)] md:bottom-6 md:left-6">
+            {game.name}
+          </h1>
         </div>
 
-        <div class="grid gap-8 md:grid-cols-3">
+        <div class="grid gap-6 md:grid-cols-3">
           <div class="md:col-span-2">
-            <h1 class="mb-3 text-2xl font-bold tracking-tight text-[var(--ps-text)]">
-              {game.name}
-            </h1>
             <p class="leading-relaxed text-[var(--ps-muted)]">
               {game.description ?? 'Sin descripción disponible.'}
             </p>
           </div>
 
           <div class="md:col-span-1">
-            <span class="text-3xl font-bold text-[var(--ps-green)]">
+            <span class="text-3xl font-black text-[var(--ps-price)]">
               ${game.price.toFixed(2)}
             </span>
           </div>
         </div>
 
-        <div class="mt-6 grid grid-cols-2 gap-6 rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-6 md:grid-cols-4">
+        <div class="mt-6 flex flex-wrap gap-6 border-t border-[var(--ps-line)] pt-6">
           {game.developer && (
-            <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-[var(--ps-muted)]">
+            <div class="min-w-[160px] border-r border-[var(--ps-line)] pr-6 last:border-r-0 last:pr-0">
+              <span class="text-[10px] uppercase tracking-widest text-[var(--ps-muted)]">
                 Desarrollador
               </span>
-              <p class="mt-1 text-sm text-[var(--ps-text)]">
+              <p class="mt-1 text-sm font-bold text-[var(--ps-white)]">
                 {game.developer.name}
               </p>
             </div>
           )}
 
           {game.release_date && (
-            <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-[var(--ps-muted)]">
+            <div class="min-w-[160px] border-r border-[var(--ps-line)] pr-6 last:border-r-0 last:pr-0">
+              <span class="text-[10px] uppercase tracking-widest text-[var(--ps-muted)]">
                 Lanzamiento
               </span>
-              <p class="mt-1 text-sm text-[var(--ps-text)]">
+              <p class="mt-1 text-sm font-bold text-[var(--ps-white)]">
                 {new Date(game.release_date).toLocaleDateString('es-CO', {
                   year: 'numeric',
                   month: 'long',
@@ -100,15 +100,15 @@ if (!game && !errorMsg) {
           )}
 
           {game.genres.length > 0 && (
-            <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-[var(--ps-muted)]">
+            <div class="min-w-[160px] border-r border-[var(--ps-line)] pr-6 last:border-r-0 last:pr-0">
+              <span class="text-[10px] uppercase tracking-widest text-[var(--ps-muted)]">
                 Géneros
               </span>
-              <div class="mt-1 flex flex-wrap gap-2">
-                {game.genres.map((genre) => (
+              <div class="mt-2 flex flex-wrap gap-1">
+                {game.genres.map((genre, index) => (
                   <a
                     href={`/games?genreId=${genre.id}`}
-                    class="rounded-full border border-[var(--ps-blue)] bg-[color:color-mix(in_srgb,var(--ps-blue)_20%,transparent)] px-3 py-1 text-xs text-[var(--ps-blue-light)] transition-colors hover:bg-[var(--ps-blue)] hover:text-[var(--ps-text)]"
+                    class={`badge-genre-${index % 4}`}
                   >
                     {genre.name}
                   </a>
@@ -118,15 +118,13 @@ if (!game && !errorMsg) {
           )}
 
           {game.platforms.length > 0 && (
-            <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-[var(--ps-muted)]">
+            <div class="min-w-[160px] border-r border-[var(--ps-line)] pr-6 last:border-r-0 last:pr-0">
+              <span class="text-[10px] uppercase tracking-widest text-[var(--ps-muted)]">
                 Plataformas
               </span>
-              <div class="mt-1 flex flex-wrap gap-2">
+              <div class="mt-2 flex flex-wrap gap-1">
                 {game.platforms.map((platform) => (
-                  <span class="rounded-full bg-[color:color-mix(in_srgb,var(--ps-text)_5%,transparent)] px-3 py-1 text-xs text-[var(--ps-muted)]">
-                    {platform.name}
-                  </span>
+                  <span class="badge-platform">{platform.name}</span>
                 ))}
               </div>
             </div>

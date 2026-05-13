@@ -20,12 +20,12 @@ const formAction = action ?? '/games';
     name="search"
     value={search}
     placeholder="Buscar juegos..."
-    class="w-full rounded-xl border border-[var(--ps-border)] bg-[var(--ps-bg)] px-4 py-2 text-sm text-[var(--ps-text)] placeholder:text-[var(--ps-muted)] outline-none transition-colors focus:border-[var(--ps-blue-light)] md:flex-1"
+    class="w-full border-b-2 border-[var(--ps-line)] bg-transparent px-0 py-2 text-sm text-[var(--ps-white)] placeholder:text-[var(--ps-muted)] outline-none transition-colors focus:border-[var(--ps-blue)] md:flex-1"
   />
   <slot />
   <button
     type="submit"
-    class="rounded-xl bg-[var(--ps-blue)] px-6 py-2 text-sm font-bold text-[var(--ps-text)] transition-colors hover:bg-[var(--ps-blue-light)]"
+    class="cursor-pointer rounded-sm bg-[var(--ps-blue)] px-6 py-2 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition-colors hover:bg-[var(--ps-blue-bright)]"
   >
     Buscar
   </button>

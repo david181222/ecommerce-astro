@@ -1,49 +1,77 @@
 @import "tailwindcss";
 
 :root {
-	--ps-bg: #0A0E1A;
-	--ps-surface: #111827;
-	--ps-surface-2: #1C2333;
-	--ps-border: #1E3A5F;
+	--ps-bg: #020B18;
+	--ps-surface: #0A1628;
+	--ps-surface-2: #0D1F3C;
+	--ps-line: #1A3A5C;
 	--ps-blue: #0070D1;
-	--ps-blue-light: #4DA6FF;
-	--ps-green: #00C896;
-	--ps-text: #F0F4FF;
-	--ps-muted: #7B8EA8;
+	--ps-blue-bright: #4DA8FF;
+	--ps-white: #EEF2FF;
+	--ps-muted: #6B82A0;
+	--ps-price: #00E5A0;
+	--ps-cross: #4A90D9;
+	--ps-circle: #E8543A;
+	--ps-triangle: #1DB386;
+	--ps-square: #D4538A;
 }
 
-.btn-page {
+.badge-genre-0,
+.badge-genre-1,
+.badge-genre-2,
+.badge-genre-3,
+.badge-platform {
 	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	min-width: 2.5rem;
-	height: 2.5rem;
-	padding: 0 0.75rem;
-	border-radius: 0.5rem;
-	border: 1px solid var(--ps-border);
-	background: var(--ps-surface);
-	color: var(--ps-text);
-	font-size: 0.875rem;
-	transition: background 0.15s, border-color 0.15s;
-}
-
-.btn-page:hover {
-	background: var(--ps-blue);
-	border-color: var(--ps-blue);
-}
-
-.btn-page-active {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-width: 2.5rem;
-	height: 2.5rem;
-	padding: 0 0.75rem;
-	border-radius: 0.5rem;
-	border: 1px solid var(--ps-blue);
-	background: var(--ps-blue);
-	color: #fff;
-	font-size: 0.875rem;
+	border: 1px solid transparent;
+	font-size: 10px;
 	font-weight: 700;
-	transition: background 0.15s, border-color 0.15s;
+	letter-spacing: 0.1em;
+	line-height: 1;
+	padding: 2px 8px;
+	text-transform: uppercase;
+	border-radius: 2px;
+}
+
+.badge-genre-0 {
+	background-color: color-mix(in srgb, var(--ps-cross) 20%, transparent);
+	border-color: color-mix(in srgb, var(--ps-cross) 40%, transparent);
+	color: var(--ps-cross);
+}
+
+.badge-genre-1 {
+	background-color: color-mix(in srgb, var(--ps-circle) 20%, transparent);
+	border-color: color-mix(in srgb, var(--ps-circle) 40%, transparent);
+	color: var(--ps-circle);
+}
+
+.badge-genre-2 {
+	background-color: color-mix(in srgb, var(--ps-triangle) 20%, transparent);
+	border-color: color-mix(in srgb, var(--ps-triangle) 40%, transparent);
+	color: var(--ps-triangle);
+}
+
+.badge-genre-3 {
+	background-color: color-mix(in srgb, var(--ps-square) 20%, transparent);
+	border-color: color-mix(in srgb, var(--ps-square) 40%, transparent);
+	color: var(--ps-square);
+}
+
+.badge-platform {
+	background-color: var(--ps-surface-2);
+	border-color: color-mix(in srgb, var(--ps-blue) 40%, transparent);
+	color: var(--ps-blue-bright);
+}
+
+select {
+	color: var(--ps-white);
+}
+
+select option {
+	background-color: var(--ps-surface);
+	color: var(--ps-white);
+}
+
+select option:disabled {
+	color: var(--ps-muted);
 }

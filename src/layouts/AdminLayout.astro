@@ -18,19 +18,19 @@ const pageTitle = title ? `${title} | Admin` : "Admin";
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
   </head>
-  <body class="bg-[var(--ps-bg)] font-sans text-[var(--ps-text)]">
+  <body class="bg-[var(--ps-bg)] font-sans text-[var(--ps-white)]">
     <AuthGuard />
-    <header class="border-b border-[var(--ps-border)] bg-[var(--ps-surface)]">
+    <header class="border-b border-[var(--ps-line)] bg-[var(--ps-bg)]">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-8">
         <div class="flex items-center gap-6">
-          <a href="/admin" class="text-xl font-black tracking-tight text-[var(--ps-text)]">
+          <a href="/admin" class="text-lg font-black tracking-tight text-[var(--ps-white)]">
             Admin
           </a>
-          <nav class="hidden items-center gap-4 text-sm font-semibold text-[var(--ps-muted)] md:flex">
-            <a href="/admin" class="transition-colors hover:text-[var(--ps-text)]">
+          <nav class="hidden items-center gap-4 text-sm font-medium uppercase tracking-widest text-[var(--ps-muted)] md:flex">
+            <a href="/admin" class="transition-colors hover:text-[var(--ps-white)]">
               Juegos
             </a>
-            <a href="/admin/new" class="transition-colors hover:text-[var(--ps-text)]">
+            <a href="/admin/new" class="transition-colors hover:text-[var(--ps-white)]">
               Nuevo juego
             </a>
           </nav>
@@ -38,21 +38,21 @@ const pageTitle = title ? `${title} | Admin` : "Admin";
         <div class="flex items-center gap-3">
           <a
             href="/admin/new"
-            class="rounded-md bg-[var(--ps-blue)] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--ps-blue-light)]"
+            class="rounded-sm bg-[var(--ps-blue)] px-3 py-2 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition-colors hover:bg-[var(--ps-blue-bright)]"
           >
             Crear juego
           </a>
           <button
             id="admin-logout"
             type="button"
-            class="rounded-md border border-[var(--ps-border)] px-3 py-2 text-sm font-semibold text-[var(--ps-text)] transition-colors hover:border-[var(--ps-blue)] hover:text-white"
+            class="cursor-pointer rounded-sm border border-[var(--ps-line)] px-3 py-2 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition-colors hover:border-[var(--ps-blue)] hover:text-[var(--ps-white)]"
           >
             Logout
           </button>
         </div>
       </div>
       <div class="mx-auto max-w-6xl px-4 pb-3 md:px-8">
-        <p id="logout-error" class="hidden text-sm text-red-400"></p>
+        <p id="logout-error" class="hidden text-sm text-[var(--ps-circle)]"></p>
       </div>
     </header>
     <main class="mx-auto max-w-6xl px-4 py-8 md:px-8">

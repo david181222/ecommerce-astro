@@ -171,7 +171,7 @@ export default function ProductTable({
     <section className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--ps-text)]">
+          <h1 className="text-2xl font-black text-[var(--ps-white)]">
             Juegos
           </h1>
           <p className="text-sm text-[var(--ps-muted)]">
@@ -180,22 +180,22 @@ export default function ProductTable({
         </div>
         <a
           href="/admin/new"
-          className="rounded-md bg-[var(--ps-blue)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--ps-blue-light)]"
+          className="rounded-sm bg-[var(--ps-blue)] px-4 py-2 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition hover:bg-[var(--ps-blue-bright)]"
         >
           Crear juego
         </a>
       </div>
 
       {error ? (
-        <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded border border-[var(--ps-circle)]/40 bg-[var(--ps-circle)]/10 px-4 py-3 text-sm text-[var(--ps-white)]">
           {error}
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface)]">
+      <div className="overflow-hidden rounded border border-[var(--ps-line)] bg-[var(--ps-surface)]">
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-[var(--ps-surface-2)] text-xs uppercase tracking-wide text-[var(--ps-muted)]">
+            <thead className="bg-[var(--ps-surface-2)] text-[10px] uppercase tracking-widest text-[var(--ps-muted)]">
               <tr>
                 <th className="px-4 py-3">Juego</th>
                 <th className="px-4 py-3">Desarrollador</th>
@@ -205,7 +205,7 @@ export default function ProductTable({
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--ps-border)]">
+            <tbody className="divide-y divide-[var(--ps-line)]">
               {loading ? (
                 <tr>
                   <td className="px-4 py-6 text-[var(--ps-muted)]" colSpan={6}>
@@ -227,19 +227,19 @@ export default function ProductTable({
                           <img
                             src={product.image_url}
                             alt={product.name}
-                            className="h-11 w-11 rounded-lg object-cover"
+                            className="h-11 w-11 object-cover"
                             loading="lazy"
                           />
                         ) : (
-                          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--ps-surface-2)] text-[10px] text-[var(--ps-muted)]">
+                          <div className="flex h-11 w-11 items-center justify-center bg-[var(--ps-surface-2)] text-[10px] text-[var(--ps-muted)]">
                             Sin imagen
                           </div>
                         )}
                         <div>
-                          <p className="font-semibold text-[var(--ps-text)]">
+                          <p className="font-semibold text-[var(--ps-white)]">
                             {product.name}
                           </p>
-                          <p className="text-xs text-[var(--ps-muted)]">
+                          <p className="text-[10px] font-mono text-[var(--ps-muted)]">
                             {product.id}
                           </p>
                         </div>
@@ -248,7 +248,7 @@ export default function ProductTable({
                     <td className="px-4 py-4 text-[var(--ps-muted)]">
                       {product.developers?.name ?? "Sin desarrollador"}
                     </td>
-                    <td className="px-4 py-4 font-semibold text-[var(--ps-text)]">
+                    <td className="px-4 py-4 font-semibold text-[var(--ps-white)]">
                       {formatPrice(product.price)}
                     </td>
                     <td className="px-4 py-4 text-[var(--ps-muted)]">
@@ -262,7 +262,7 @@ export default function ProductTable({
                         <button
                           type="button"
                           onClick={() => handleEdit(product)}
-                          className="rounded-md border border-[var(--ps-border)] px-3 py-1.5 text-xs font-semibold text-[var(--ps-text)] transition hover:border-[var(--ps-blue)]"
+                          className="cursor-pointer rounded-sm border border-[var(--ps-blue)] px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[var(--ps-blue)] transition hover:bg-[var(--ps-blue)] hover:text-[var(--ps-white)]"
                         >
                           Editar
                         </button>
@@ -270,7 +270,7 @@ export default function ProductTable({
                           type="button"
                           onClick={() => handleDelete(product)}
                           disabled={deletingId === product.id}
-                          className="rounded-md border border-red-500/40 px-3 py-1.5 text-xs font-semibold text-red-200 transition hover:border-red-400 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="cursor-pointer rounded-sm border border-[var(--ps-circle)] px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[var(--ps-circle)] transition hover:bg-[var(--ps-circle)] hover:text-[var(--ps-white)] disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {deletingId === product.id ? "Borrando..." : "Borrar"}
                         </button>

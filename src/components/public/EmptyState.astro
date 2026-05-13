@@ -13,7 +13,7 @@ const {
 ---
 
 <div class="py-20 text-center">
-  <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center text-[var(--ps-border)]">
+  <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center text-[var(--ps-line)]">
     <svg
       viewBox="0 0 24 24"
       fill="none"
@@ -28,12 +28,12 @@ const {
       <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
     </svg>
   </div>
-  <h2 class="text-xl font-bold text-[var(--ps-text)]">{title}</h2>
+  <h2 class="text-xl font-bold text-[var(--ps-white)]">{title}</h2>
   <p class="mt-2 text-sm text-[var(--ps-muted)]">{message}</p>
   {showReset && (
     <a
       href="/games"
-      class="mt-6 inline-flex items-center justify-center rounded-full bg-[var(--ps-blue)] px-6 py-3 text-sm font-bold text-[var(--ps-text)] transition-colors hover:bg-[var(--ps-blue-light)]"
+      class="mt-6 inline-flex items-center justify-center rounded-sm bg-[var(--ps-blue)] px-6 py-3 text-xs font-bold uppercase tracking-wider text-[var(--ps-white)] transition-colors hover:bg-[var(--ps-blue-bright)]"
     >
       Ver todos los juegos
     </a>

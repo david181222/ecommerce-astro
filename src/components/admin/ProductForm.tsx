@@ -68,6 +68,8 @@ export default function ProductForm() {
   const [developers, setDevelopers] = useState<Developer[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
+  const [customDeveloper, setCustomDeveloper] = useState("");
+  const [addingDeveloper, setAddingDeveloper] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -228,12 +230,13 @@ export default function ProductForm() {
   const validate = () => {
     const name = form.name.trim();
     const price = Number(form.price);
+    const customName = customDeveloper.trim();
 
     if (!name) {
       return "El nombre es obligatorio.";
     }
-    if (!form.developerId) {
-      return "Selecciona un desarrollador.";
+    if (!form.developerId && !customName) {
+      return "Selecciona un desarrollador o crea uno.";
     }
     if (Number.isNaN(price) || price < 0) {
       return "Precio inv\u00e1lido.";
@@ -348,6 +351,56 @@ export default function ProductForm() {
     return null;
   };
 
+  const createDeveloperByName = async (name: string) => {
+    const normalized = name.trim();
+    if (!normalized) {
+      setError("Escribe el nombre del desarrollador.");
+      return null;
+    }
+
+    const existing = developers.find(
+      (developer) => developer.name.toLowerCase() === normalized.toLowerCase()
+    );
+    if (existing) {
+      return existing;
+    }
+
+    const supabase = supabaseBrowser();
+    const { data, error: insertError } = await supabase
+      .from("developers")
+      .insert({ name: normalized })
+      .select("id, name")
+      .single();
+
+    if (insertError || !data) {
+      setError(insertError?.message ?? "No se pudo crear el desarrollador.");
+      return null;
+    }
+
+    setDevelopers((prev) =>
+      [...prev, data].sort((a, b) => a.name.localeCompare(b.name))
+    );
+    return data;
+  };
+
+  const handleAddDeveloper = async () => {
+    const name = customDeveloper.trim();
+    setAddingDeveloper(true);
+    setError(null);
+    setSuccess(null);
+
+    const created = await createDeveloperByName(name);
+    if (!created) {
+      setAddingDeveloper(false);
+      return;
+    }
+
+    setForm((prev) => ({ ...prev, developerId: created.id }));
+    setCustomDeveloper("");
+    setSuccess("Desarrollador creado.");
+    setAddingDeveloper(false);
+  };
+
   /**
    * Crea o actualiza juego segun el modo.
    * Recibe event del submit.
@@ -364,12 +417,23 @@ export default function ProductForm() {
       return;
     }
 
+    let developerId = form.developerId;
+    if (!developerId && customDeveloper.trim()) {
+      const created = await createDeveloperByName(customDeveloper);
+      if (!created) {
+        return;
+      }
+      developerId = created.id;
+      setForm((prev) => ({ ...prev, developerId: created.id }));
+      setCustomDeveloper("");
+    }
+
     const payloadBase = {
       name: form.name.trim(),
       description: normalizeNullable(form.description),
       price: Number(form.price),
       release_date: form.releaseDate || null,
-      developer_id: form.developerId || null,
+      developer_id: developerId || null,
     };
 
     setLoading(true);
@@ -472,7 +536,7 @@ export default function ProductForm() {
 
   if (loadingProduct || loadingRefs) {
     return (
-      <div className="rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface)] p-6 text-sm text-[var(--ps-muted)]">
+      <div className="rounded border border-[var(--ps-line)] bg-[var(--ps-surface)] p-6 text-sm text-[var(--ps-muted)]">
         Cargando datos...
       </div>
     );
@@ -481,11 +545,11 @@ export default function ProductForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface)] p-6"
+      className="space-y-6 rounded border border-[var(--ps-line)] bg-[var(--ps-surface)] p-6"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--ps-text)]">
+          <h1 className="text-2xl font-black text-[var(--ps-white)]">
             {isEditing ? "Editar juego" : "Nuevo juego"}
           </h1>
           <p className="text-sm text-[var(--ps-muted)]">
@@ -495,20 +559,20 @@ export default function ProductForm() {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-md bg-[var(--ps-blue)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--ps-blue-light)] disabled:cursor-not-allowed disabled:opacity-60"
+          className="cursor-pointer rounded-sm bg-[var(--ps-blue)] px-4 py-2 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition hover:bg-[var(--ps-blue-bright)] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? "Guardando..." : "Guardar"}
         </button>
       </div>
 
       {error ? (
-        <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded border border-[var(--ps-circle)]/40 bg-[var(--ps-circle)]/10 px-4 py-3 text-sm text-[var(--ps-white)]">
           {error}
         </div>
       ) : null}
 
       {success ? (
-        <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+        <div className="rounded border border-[var(--ps-triangle)]/40 bg-[var(--ps-triangle)]/10 px-4 py-3 text-sm text-[var(--ps-white)]">
           {success}
         </div>
       ) : null}
@@ -521,7 +585,7 @@ export default function ProductForm() {
               type="text"
               value={form.name}
               onChange={handleChange("name")}
-              className="mt-2 w-full rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface-2)] px-4 py-3 text-sm text-[var(--ps-text)] outline-none transition focus:border-[var(--ps-blue-light)]"
+              className="mt-2 w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
               placeholder="Nombre del juego"
               required
             />
@@ -532,8 +596,7 @@ export default function ProductForm() {
             <select
               value={form.developerId}
               onChange={handleChange("developerId")}
-              className="mt-2 w-full rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface-2)] px-4 py-3 text-sm text-[var(--ps-text)] outline-none transition focus:border-[var(--ps-blue-light)]"
-              required
+              className="mt-2 w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
             >
               <option value="">Selecciona un desarrollador</option>
               {developers.map((developer) => (
@@ -544,6 +607,33 @@ export default function ProductForm() {
             </select>
           </label>
 
+          {!form.developerId && (
+            <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+              <div>
+                <label className="block text-[10px] font-semibold uppercase tracking-widest text-[var(--ps-muted)]">
+                  Desarrollador custom
+                  <input
+                    type="text"
+                    value={customDeveloper}
+                    onChange={(event) => setCustomDeveloper(event.target.value)}
+                    className="mt-2 w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
+                    placeholder="Nombre del desarrollador"
+                  />
+                </label>
+              </div>
+              <div className="flex items-end">
+                <button
+                  type="button"
+                  onClick={handleAddDeveloper}
+                  disabled={addingDeveloper}
+                  className="w-full cursor-pointer rounded-sm border border-[var(--ps-blue)] px-4 py-2 text-xs font-bold uppercase tracking-widest text-[var(--ps-blue)] transition hover:bg-[var(--ps-blue)] hover:text-[var(--ps-white)] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {addingDeveloper ? "Agregando..." : "Agregar"}
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="grid gap-4 md:grid-cols-2">
             <label className="block text-xs font-semibold uppercase text-[var(--ps-muted)]">
               Precio
@@ -552,7 +642,7 @@ export default function ProductForm() {
                 inputMode="decimal"
                 value={form.price}
                 onChange={handleChange("price")}
-                className="mt-2 w-full rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface-2)] px-4 py-3 text-sm text-[var(--ps-text)] outline-none transition focus:border-[var(--ps-blue-light)]"
+                className="mt-2 w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
                 placeholder="0.00"
                 min="0"
                 step="0.01"
@@ -566,7 +656,7 @@ export default function ProductForm() {
                 type="date"
                 value={form.releaseDate}
                 onChange={handleChange("releaseDate")}
-                className="mt-2 w-full rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface-2)] px-4 py-3 text-sm text-[var(--ps-text)] outline-none transition focus:border-[var(--ps-blue-light)]"
+                className="mt-2 w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
               />
             </label>
           </div>
@@ -576,7 +666,7 @@ export default function ProductForm() {
             <textarea
               value={form.description}
               onChange={handleChange("description")}
-              className="mt-2 min-h-[140px] w-full rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface-2)] px-4 py-3 text-sm text-[var(--ps-text)] outline-none transition focus:border-[var(--ps-blue-light)]"
+              className="mt-2 min-h-[140px] w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
               placeholder="Describe el juego"
             />
           </label>
@@ -597,11 +687,11 @@ export default function ProductForm() {
             />
           </div>
 
-          <div className="rounded-xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-4">
+          <div className="rounded border border-[var(--ps-line)] bg-[var(--ps-surface-2)] p-4">
             <p className="text-xs font-semibold uppercase text-[var(--ps-muted)]">
               G&eacute;neros
             </p>
-            <div className="mt-3 grid gap-2 text-sm text-[var(--ps-text)] sm:grid-cols-2">
+            <div className="mt-3 grid gap-2 text-sm text-[var(--ps-white)] sm:grid-cols-2">
               {genres.length === 0 ? (
                 <span className="text-xs text-[var(--ps-muted)]">
                   Sin g&eacute;neros disponibles.
@@ -621,11 +711,11 @@ export default function ProductForm() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-4">
+          <div className="rounded border border-[var(--ps-line)] bg-[var(--ps-surface-2)] p-4">
             <p className="text-xs font-semibold uppercase text-[var(--ps-muted)]">
               Plataformas
             </p>
-            <div className="mt-3 grid gap-2 text-sm text-[var(--ps-text)] sm:grid-cols-2">
+            <div className="mt-3 grid gap-2 text-sm text-[var(--ps-white)] sm:grid-cols-2">
               {platforms.length === 0 ? (
                 <span className="text-xs text-[var(--ps-muted)]">
                   Sin plataformas disponibles.
@@ -648,7 +738,7 @@ export default function ProductForm() {
           </div>
 
           {isEditing ? (
-            <div className="rounded-xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-4 text-xs text-[var(--ps-muted)]">
+            <div className="rounded border border-[var(--ps-line)] bg-[var(--ps-surface-2)] p-4 text-xs text-[var(--ps-muted)]">
               ID: {productId}
             </div>
           ) : null}

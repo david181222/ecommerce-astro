@@ -87,10 +87,10 @@ export default function ImageUploader({
   return (
     <div className="space-y-3">
       <div
-        className={`flex min-h-[180px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed p-6 text-center transition ${
+        className={`flex min-h-[180px] flex-col items-center justify-center gap-3 rounded border border-dashed p-6 text-center transition ${
           isDragging
             ? "border-[var(--ps-blue)] bg-[var(--ps-surface-2)]"
-            : "border-[var(--ps-border)] bg-[var(--ps-surface)]"
+            : "border-[var(--ps-line)] bg-[var(--ps-surface)]"
         }`}
         onDragOver={(event) => {
           event.preventDefault();
@@ -111,15 +111,15 @@ export default function ImageUploader({
           <img
             src={activeImage}
             alt="Preview"
-            className="h-32 w-32 rounded-xl object-cover"
+            className="h-32 w-32 object-cover"
           />
         ) : (
-          <div className="flex h-32 w-32 items-center justify-center rounded-xl bg-[var(--ps-surface-2)] text-xs text-[var(--ps-muted)]">
+          <div className="flex h-32 w-32 items-center justify-center bg-[var(--ps-surface-2)] text-xs text-[var(--ps-muted)]">
             Sin imagen
           </div>
         )}
         <div>
-          <p className="text-sm font-semibold text-[var(--ps-text)]">
+          <p className="text-sm font-semibold text-[var(--ps-white)]">
             Arrastra una imagen o haz click para seleccionar
           </p>
           <p className="text-xs text-[var(--ps-muted)]">
@@ -128,7 +128,7 @@ export default function ImageUploader({
         </div>
         <button
           type="button"
-          className="rounded-md border border-[var(--ps-border)] px-3 py-1.5 text-xs font-semibold text-[var(--ps-text)] transition hover:border-[var(--ps-blue)]"
+          className="cursor-pointer rounded-sm border border-[var(--ps-line)] px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition hover:border-[var(--ps-blue)]"
         >
           Seleccionar archivo
         </button>
@@ -141,19 +141,19 @@ export default function ImageUploader({
         />
       </div>
       {value ? (
-        <div className="flex items-center justify-between rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface)] px-3 py-2 text-xs text-[var(--ps-muted)]">
+        <div className="flex items-center justify-between rounded border border-[var(--ps-line)] bg-[var(--ps-surface)] px-3 py-2 text-xs text-[var(--ps-muted)]">
           <span className="truncate">{value.name}</span>
           <button
             type="button"
             onClick={() => handleFile(null)}
-            className="text-red-200 transition hover:text-red-100"
+            className="cursor-pointer text-[var(--ps-circle)] transition hover:text-[var(--ps-white)]"
           >
             Quitar
           </button>
         </div>
       ) : null}
       {error ? (
-        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-200">
+        <p className="rounded border border-[var(--ps-circle)]/40 bg-[var(--ps-circle)]/10 px-3 py-2 text-xs text-[var(--ps-white)]">
           {error}
         </p>
       ) : null}

@@ -18,12 +18,12 @@ const pageTitle = "Login | Admin";
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
   </head>
-  <body class="bg-[var(--ps-bg)] font-sans text-[var(--ps-text)]">
+  <body class="bg-[var(--ps-bg)] font-sans text-[var(--ps-white)]">
     <main class="flex min-h-screen items-center justify-center px-4 py-12">
-      <section class="w-full max-w-md rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface)] p-8 shadow-xl shadow-black/40">
+      <section class="w-full max-w-md rounded border border-[var(--ps-line)] bg-[var(--ps-surface)] p-8">
         <div class="mb-6">
           <p class="text-sm uppercase tracking-[0.3em] text-[var(--ps-muted)]">Admin</p>
-          <h1 class="mt-3 text-2xl font-bold">Acceso a la consola</h1>
+          <h1 class="mt-3 text-2xl font-black uppercase tracking-tight">Acceso a la consola</h1>
           <p class="mt-2 text-sm text-[var(--ps-muted)]">
             Inicia sesi&oacute;n para administrar el cat&aacute;logo.
           </p>
@@ -39,7 +39,7 @@ const pageTitle = "Login | Admin";
               type="email"
               required
               autocomplete="email"
-              class="mt-2 w-full rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface-2)] px-4 py-3 text-sm text-[var(--ps-text)] outline-none transition focus:border-[var(--ps-blue-light)]"
+              class="mt-2 w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
               placeholder="admin@tienda.com"
             />
           </div>
@@ -56,18 +56,18 @@ const pageTitle = "Login | Admin";
               type="password"
               required
               autocomplete="current-password"
-              class="mt-2 w-full rounded-lg border border-[var(--ps-border)] bg-[var(--ps-surface-2)] px-4 py-3 text-sm text-[var(--ps-text)] outline-none transition focus:border-[var(--ps-blue-light)]"
+              class="mt-2 w-full rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface-2)] px-3 py-2 text-sm text-[var(--ps-white)] outline-none transition focus:border-[var(--ps-blue)]"
               placeholder="********"
             />
           </div>
           <button
             id="login-submit"
             type="submit"
-            class="flex w-full items-center justify-center rounded-lg bg-[var(--ps-blue)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--ps-blue-light)]"
+            class="flex w-full cursor-pointer items-center justify-center rounded-sm bg-[var(--ps-blue)] px-4 py-3 text-xs font-bold uppercase tracking-widest text-[var(--ps-white)] transition hover:bg-[var(--ps-blue-bright)]"
           >
             Entrar
           </button>
-          <p id="login-error" class="hidden rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200"></p>
+          <p id="login-error" class="hidden rounded border border-[var(--ps-circle)]/40 bg-[var(--ps-circle)]/10 px-3 py-2 text-sm text-[var(--ps-white)]"></p>
         </form>
       </section>
     </main>

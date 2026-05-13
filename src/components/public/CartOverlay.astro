@@ -4,13 +4,13 @@
 <button
   id="cart-toggle"
   type="button"
-  class="relative flex h-12 w-12 items-center justify-center rounded-full border border-[var(--ps-border)] bg-[var(--ps-surface)] text-lg text-[var(--ps-text)] transition-colors hover:border-[var(--ps-blue)] hover:bg-[var(--ps-surface-2)]"
+  class="relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-sm border border-[var(--ps-line)] bg-[var(--ps-surface)] text-base text-[var(--ps-white)] transition-colors hover:border-[var(--ps-blue)] hover:bg-[var(--ps-surface-2)]"
   aria-label="Abrir carrito"
 >
   🛒
   <span
     id="cart-count"
-    class="absolute -right-1 -top-1 hidden min-w-[1.25rem] rounded-full bg-[var(--ps-blue)] px-1.5 py-0.5 text-[10px] font-bold text-white"
+    class="absolute -right-1 -top-1 hidden min-w-[1.25rem] rounded-sm bg-[var(--ps-blue)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--ps-white)]"
   >
     0
   </span>
@@ -18,20 +18,20 @@
 
 <div
   id="cart-modal"
-  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-[var(--ps-bg)]/80 p-4"
   role="dialog"
   aria-modal="true"
   aria-labelledby="cart-title"
 >
-  <div class="w-full max-w-md rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface)] p-6">
+  <div class="w-full max-w-md rounded border border-[var(--ps-line)] bg-[var(--ps-surface)] p-6">
     <div class="flex items-center justify-between">
-      <h2 id="cart-title" class="text-lg font-bold text-[var(--ps-text)]">
+      <h2 id="cart-title" class="text-lg font-bold text-[var(--ps-white)]">
         Carrito
       </h2>
       <button
         id="cart-close"
         type="button"
-        class="rounded-full border border-[var(--ps-border)] px-2 py-1 text-xs text-[var(--ps-text)] transition-colors hover:border-[var(--ps-blue)] hover:bg-[var(--ps-surface-2)]"
+        class="cursor-pointer rounded-sm border border-[var(--ps-line)] px-2 py-1 text-xs text-[var(--ps-white)] transition-colors hover:border-[var(--ps-blue)] hover:bg-[var(--ps-surface-2)]"
         aria-label="Cerrar carrito"
       >
         ✕
@@ -39,11 +39,11 @@
     </div>
     <div id="cart-items" class="mt-4 max-h-80 space-y-3 overflow-auto"></div>
     <div class="mt-4 flex items-center justify-between">
-      <span id="cart-total" class="text-sm font-semibold text-[var(--ps-text)]"></span>
+      <span id="cart-total" class="text-sm font-semibold text-[var(--ps-white)]"></span>
       <button
         id="cart-checkout"
         type="button"
-        class="rounded-xl bg-[var(--ps-blue)] px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[var(--ps-blue-light)]"
+        class="cursor-pointer rounded-sm bg-[var(--ps-blue)] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[var(--ps-white)] transition-colors hover:bg-[var(--ps-blue-bright)]"
       >
         Comprar
       </button>
@@ -111,13 +111,13 @@
       const image = document.createElement("img");
       image.src = item.image;
       image.alt = item.name;
-      image.className = "h-12 w-12 rounded-lg object-cover";
+      image.className = "h-12 w-12 object-cover";
 
       const meta = document.createElement("div");
       meta.className = "flex-1";
 
       const title = document.createElement("p");
-      title.className = "text-sm font-semibold text-[var(--ps-text)]";
+      title.className = "text-sm font-semibold text-[var(--ps-white)]";
       title.textContent = item.name;
 
       const price = document.createElement("p");

@@ -51,17 +51,17 @@ const paginationBase = filterParams.toString()
 ---
 
 <Layout title="Catálogo de Juegos">
-  <main class="mx-auto max-w-7xl px-4 py-8 md:px-8">
+  <main class="mx-auto min-h-screen max-w-7xl px-4 py-8 md:px-8">
     <!-- Titulo de seccion -->
     <div class="mb-6 flex items-center justify-between gap-4">
-      <h1 class="text-4xl font-bold text-[var(--ps-text)]">
+      <h1 class="text-4xl font-black uppercase tracking-tight text-[var(--ps-white)] after:mt-2 after:block after:h-[3px] after:w-12 after:bg-[var(--ps-blue)] after:content-['']">
         Catálogo de Juegos
       </h1>
       <CartOverlay />
     </div>
 
     <!-- Zona de filtros -->
-    <div class="mb-8 rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-4">
+    <div class="mb-8 border-b border-[var(--ps-line)] py-4">
       <SearchBar search={search}>
         <div class="flex w-full flex-col gap-3 md:w-auto md:flex-row">
           <GenreFilter genres={genres} selectedGenreId={genreId} />
@@ -77,7 +77,7 @@ const paginationBase = filterParams.toString()
     {errorMsg && (
       <p
         role="alert"
-        class="mb-6 rounded-2xl border border-[var(--ps-border)] bg-[var(--ps-surface-2)] p-4 text-[var(--ps-blue-light)]"
+        class="mb-6 rounded border border-[var(--ps-line)] bg-[var(--ps-surface)] p-4 text-[var(--ps-blue-bright)]"
       >
         {errorMsg}
       </p>
