@@ -7,7 +7,10 @@ import Layout from '../../layouts/Layout.astro';
 import { getGameById } from '../../services/games.server';
 import type { Game } from '../../types/game';
 
-const { id } = Astro.params;
+const rawId = Astro.params.id ?? '';
+const UUID_REGEX =
+  /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i;
+const id = rawId.match(UUID_REGEX)?.[0];
 
 if (!id) {
   // 404 real para SEO/Cloudflare; un redirect devolvería 302 + 200.
@@ -21,7 +24,7 @@ let errorMsg = '';
 try {
   game = await getGameById(id);
 } catch (error) {
-  console.error(`[/games/${id}] Error:`, error);
+  console.error(`[/games/${rawId}] Error:`, error);
   errorMsg = 'No pudimos cargar este juego.';
 }
 
